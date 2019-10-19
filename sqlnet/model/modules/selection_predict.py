@@ -11,16 +11,17 @@ class SelPredictor(nn.Module):
         super(SelPredictor, self).__init__()
         self.use_ca = use_ca
         self.max_tok_num = max_tok_num
-        self.sel_lstm = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.hidden_size = int(N_h/2)
+        self.sel_lstm = nn.LSTM(input_size=N_word, hidden_size=self.hidden_size,
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
         if use_ca:
-            print "Using column attention on selection predicting"
+            print("Using column attention on selection predicting")
             self.sel_att = nn.Linear(N_h, N_h)
         else:
-            print "Not using column attention on selection predicting"
+            print("Not using column attention on selection predicting")
             self.sel_att = nn.Linear(N_h, 1)
-        self.sel_col_name_enc = nn.LSTM(input_size=N_word, hidden_size=N_h/2,
+        self.sel_col_name_enc = nn.LSTM(input_size=N_word, hidden_size=self.hidden_size,
                 num_layers=N_depth, batch_first=True,
                 dropout=0.3, bidirectional=True)
         self.sel_out_K = nn.Linear(N_h, N_h)
